@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
 	const char* stunurl       = "stun.l.google.com:19302";
 	std::string localWebrtcUdpPortRange = "0:65535";
 	int logLevel              = rtc::LS_NONE;
-	const char* webroot       = "./html";
+	const char* webroot       = "./www";
 	std::string sslCertificate;
 	webrtc::AudioDeviceModule::AudioLayer audioLayer = webrtc::AudioDeviceModule::kPlatformDefaultAudio;
 	std::string nbthreads;
@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
 	TurnRedirector turnRedirector;
 
 	std::string httpAddress("0.0.0.0:");
-	std::string httpPort = "8000";
+	std::string httpPort = "9990";
 	const char * port = getenv("PORT");
 	if (port)
 	{
@@ -156,38 +156,6 @@ int main(int argc, char* argv[])
 			break;
 			case 'h':
 			default:
-				std::cout << argv[0] << std::endl;
-
-				std::cout << "  General options" << std::endl;
-				std::cout << "\t -v[v[v]]                           : verbosity"                                                                        << std::endl;
-				std::cout << "\t -V                                 : print version"                                                                    << std::endl;
-				std::cout << "\t -C config.json                     : load urls from JSON config file"                                                  << std::endl;
-				std::cout << "\t -n name -u videourl -U audiourl    : register a stream with name using url"                                            << std::endl;			
-				std::cout << "\t [url]                              : url to register in the source list"                                               << std::endl;
-
-				std::cout << std::endl << "  HTTP options" << std::endl;
-				std::cout << "\t -H hostname:port                   : HTTP server binding (default "   << httpAddress    << ")"                         << std::endl;
-				std::cout << "\t -w webroot                         : path to get static files"                                                                << std::endl;
-				std::cout << "\t -c sslkeycert                      : path to private key and certificate for HTTPS"                                    << std::endl;
-				std::cout << "\t -N nbthreads                       : number of threads for HTTP server"                                                << std::endl;
-				std::cout << "\t -A passwd                          : password file for HTTP server access"                                             << std::endl;
-				std::cout << "\t -D authDomain                      : authentication domain for HTTP server access (default:mydomain.com)"              << std::endl;
-			
-				std::cout << std::endl << "  WebRTC options" << std::endl;
-				std::cout << "\t -S[stun_address]                   : start embeded STUN server bind to address (default " << defaultlocalstunurl << ")" << std::endl;
-				std::cout << "\t -s[stun_address]                   : use an external STUN server (default:" << stunurl << " , -:means no STUN)"         << std::endl;
-				std::cout << "\t -t[username:password@]turn_address : use an external TURN relay server (default:disabled)"                              << std::endl;
-				std::cout << "\t -T[username:password@]turn_address : start embeded TURN server (default:disabled)"				                         << std::endl;
-				std::cout << "\t -R Udp_port_min:Udp_port_min       : Set the webrtc udp port range (default:" << localWebrtcUdpPortRange << ")"         << std::endl;
-				std::cout << "\t -W webrtc_trials_fields            : Set the webrtc trials fields (default:" << webrtcTrialsFields << ")"               << std::endl;
-				std::cout << "\t -I icetransport                    : Set ice transport type (default:" << transportType << ")"                          << std::endl;
-#ifdef HAVE_SOUND				
-				std::cout << "\t -a[audio layer]                    : spefify audio capture layer to use (default:" << audioLayer << ")"                 << std::endl;
-#endif				
-				std::cout << "\t -q[filter]                         : spefify publish filter (default:" << publishFilter << ")"                          << std::endl;
-				std::cout << "\t -o                                 : use null codec (keep frame encoded)"                                               << std::endl;
-				std::cout << "\t -b                                 : use sdp plan-B (default use unifiedPlan)"                                          << std::endl;
-			
 				exit(0);
 		}
 	}
@@ -199,14 +167,9 @@ int main(int argc, char* argv[])
 		optind++;
 	}
 
-	std::cout  << "Version:" << VERSION << std::endl;
-
-	std::cout  << config;
-
 	rtc::LogMessage::LogToDebug((rtc::LoggingSeverity)logLevel);
 	rtc::LogMessage::LogTimestamps();
 	rtc::LogMessage::LogThreads();
-	std::cout << "Logger level:" <<  rtc::LogMessage::GetLogToDebug() << std::endl;
 
 	rtc::ThreadManager::Instance()->WrapCurrentThread();
 	rtc::Thread* thread = rtc::Thread::Current();
@@ -268,7 +231,7 @@ int main(int argc, char* argv[])
 		
 		try {
 			std::map<std::string,HttpServerRequestHandler::httpFunction> func = webRtcServer->getHttpApi();
-			std::cout << "HTTP Listen at " << httpAddress << std::endl;
+			std::cout << "Listen at " << httpAddress << std::endl;
 			HttpServerRequestHandler httpServer(func, options);
 
 			// start STUN server if needed
