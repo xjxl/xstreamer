@@ -145,10 +145,6 @@ int main(int argc, char* argv[])
 			break;
 			
 			case 'v': 
-				logLevel--; 
-				if (optarg) {
-					logLevel-=strlen(optarg); 
-				}
 			break;			
 			case 'V':
 				exit(0);
